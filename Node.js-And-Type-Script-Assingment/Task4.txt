@@ -1,0 +1,128 @@
+// Create a new directory for project and navigate to it in the terminal.
+// Initialize a new Node.js project:
+// npm init -y
+
+// Install the necessary dependencies
+// npm install express body-parser typescript ts-node
+
+// Create a tsconfig.json file in the root directory with the following content:
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true
+  }
+}
+
+// Create a src directory in the root directory, and inside it, create a file named server.ts with the following content:
+import express, { Request, Response } from 'express';
+import bodyParser from 'body-parser';
+
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+}
+
+const app = express();
+const PORT = 3000;
+
+// In-memory data store
+const products: Product[] = [];
+
+app.use(bodyParser.json());
+
+// Retrieve a list of products
+app.get('/api/product', (req: Request, res: Response) => {
+  res.json(products);
+});
+
+// Retrieve details of a specific product by id
+app.get('/api/product/:id', (req: Request, res: Response) => {
+  const productId = parseInt(req.params.id, 10);
+  const product = products.find((p) => p.id === productId);
+
+  if (product) {
+    res.json(product);
+  } else {
+    res.status(404).json({ error: 'Product not found' });
+  }
+});
+
+// Create a new product
+app.post('/api/product', (req: Request, res: Response) => {
+  const { name, price } = req.body;
+
+  if (!name || !price) {
+    res.status(400).json({ error: 'Name and price are required' });
+    return;
+  }
+
+  const newProduct: Product = {
+    id: products.length + 1,
+    name,
+    price,
+  };
+
+  products.push(newProduct);
+  res.status(201).json(newProduct);
+});
+
+// Update details of a specific product by id
+app.put('/api/product/:id', (req: Request, res: Response) => {
+  const productId = parseInt(req.params.id, 10);
+  const productIndex = products.findIndex((p) => p.id === productId);
+
+  if (productIndex === -1) {
+    res.status(404).json({ error: 'Product not found' });
+    return;
+  }
+
+  const { name, price } = req.body;
+
+  if (!name || !price) {
+    res.status(400).json({ error: 'Name and price are required' });
+    return;
+  }
+
+  products[productIndex] = {
+    ...products[productIndex],
+    name,
+    price,
+  };
+
+  res.json(products[productIndex]);
+});
+
+// Delete a product by id
+app.delete('/api/product/:id', (req: Request, res: Response) => {
+  const productId = parseInt(req.params.id, 10);
+  const productIndex = products.findIndex((p) => p.id === productId);
+
+  if (productIndex === -1) {
+    res.status(404).json({ error: 'Product not found' });
+    return;
+  }
+
+  products.splice(productIndex, 1);
+  res.sendStatus(204);
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
+
+
+// Add the following script to the scripts section in your package.json file:
+"scripts": {
+  "start": "ts-node src/server.ts"
+}
+
+// Run your server:
+// npm start
+
+
+// Explenation
+// RESTful API should now be running on http://localhost:3000. You can use tools like Postman or curl to interact with the endpoints: GET /api/product, GET /api/product/:id, POST /api/product, PUT /api/product/:id, and DELETE /api/product/:id.

@@ -1,0 +1,96 @@
+Running the Server Locally
+
+1.Clone the repository:
+git clone <repository-url>
+cd <repository-directory>
+
+
+2.Install dependencies:
+npm install
+
+
+3.Start the server:
+npm start
+The server will be running at http://localhost:3000.
+
+4.Available Endpoints
+a.GET /api/product
+
+Retrieve a list of all products.
+
+Example Request:
+curl http://localhost:3000/api/product
+
+b.Example Response:
+
+json
+Copy code
+[]
+GET /api/product/:id
+
+Retrieve details of a specific product by ID.
+
+Example Request:
+
+bash
+Copy code
+curl http://localhost:3000/api/product/1
+Example Response:
+
+json
+Copy code
+{
+  "id": 1,
+  "name": "Sample Product",
+  "price": 19.99
+}
+POST /api/product
+
+Create a new product.
+
+Example Request:
+
+bash
+Copy code
+curl -X POST -H "Content-Type: application/json" -d '{"name": "New Product", "price": 29.99}' http://localhost:3000/api/product
+Example Response:
+
+json
+Copy code
+{
+  "id": 2,
+  "name": "New Product",
+  "price": 29.99
+}
+PUT /api/product/:id
+
+Update details of a specific product by ID.
+
+Example Request:
+
+bash
+Copy code
+curl -X PUT -H "Content-Type: application/json" -d '{"name": "Updated Product", "price": 39.99}' http://localhost:3000/api/product/2
+Example Response:
+
+json
+Copy code
+{
+  "id": 2,
+  "name": "Updated Product",
+  "price": 39.99
+}
+DELETE /api/product/:id
+
+Delete a product by ID.
+
+Example Request:
+
+bash
+Copy code
+curl -X DELETE http://localhost:3000/api/product/2
+Example Response:
+
+json
+Copy code
+No Content (204)

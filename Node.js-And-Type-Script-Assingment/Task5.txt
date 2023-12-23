@@ -1,0 +1,32 @@
+import express, { Request, Response, NextFunction } from 'express';
+import bodyParser from 'body-parser';
+
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+}
+
+const app = express();
+const PORT = 3000;
+
+// In-memory data store
+const products: Product[] = [];
+
+// Middleware to log incoming requests
+app.use((req: Request, res: Response, next: NextFunction) => {
+  const timestamp = new Date().toISOString();
+  const method = req.method;
+  const url = req.url;
+
+  console.log(`${timestamp} - ${method} ${url}`);
+  next();
+});
+
+app.use(bodyParser.json());
+
+// ... (Rest of the code remains unchanged)
+
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
